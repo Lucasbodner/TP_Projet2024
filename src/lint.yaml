@@ -1,0 +1,13 @@
+name: Lint
+on: push
+
+jobs:
+  Lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Code
+        uses: actions/checkout@v3
+      - name: Setup environment
+        uses: actions/setup-node@v4
+      - name: Run Linting Rules
+        run: exec lint

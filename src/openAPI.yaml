@@ -1,0 +1,123 @@
+openapi: 3.0.3
+info:
+  title: TP_API - Animals
+  version: 1.O.0
+paths:
+  /animals:
+    get:
+      summary: Get all the animals
+      description: Get the complete list of animals
+      parameters:
+        - in: query
+          name: createdBy
+          schema:
+            type: string
+            description: Filtrer par créateur
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Numéro de la page à récupérer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Nombre d'éléments par page
+      responses:
+        '201':
+          description: Liste des éléments de la collection animals
+
+    post:
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/Cat'
+                - $ref: '#/components/schemas/Dog'
+      responses:
+        '200':
+          description: Élément créé avec succès
+
+  /animals/{animalsID}:
+    put:
+      summary: Update an animal ID
+      parameters:
+      - in: path
+        name: animalsID
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Élément modifié"
+      responses:
+        '204':
+          description: Élément modifié avec succès
+
+
+    delete:
+      tags:
+      - Delete Tag
+      summary: 'Delete data by id'
+      parameters:
+        - in: path
+          name: animalsID
+          schema:
+            type: integer
+          required: true
+          description: Numeric id to delete json object
+      responses:
+        '200':
+          description: Élément supprimé avec succès
+        '400':
+          description: BAD REQUEST
+        '404':
+          description: NOT FOUND
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    animals:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          minLength: 3
+          maxLength: 50
+          example: "AnimalID 1"
+    Pet:
+      type: object
+      properties:
+
+      # ...
+    Dog:
+      allOf:
+        - $ref: '#/components/schemas/Pet'
+        - type: object
+          properties:
+          # ...
+    Cat:
+      allOf:
+        - $ref: '#/components/schemas/Pet'
+        - type: object
+          properties:
+          # ...
